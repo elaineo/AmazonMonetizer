@@ -1,62 +1,85 @@
-var rules = [];
+var rules = { "pool": true }
 var rulesUl, newRuleDiv;
+var buddyContainer;
 
 function refreshRules() {
-	rulesUl.empty();
 
-	if(rules.length){
-		$('#no-rules').hide();
-		$('#headings').show();
-		for (var i = 0; i < rules.length; i++) {
-			var rule = rules[i];
-			var li = $('<li class="' + rule.isActive + '" data-rule-index="' + i + '"/>');
-			var fromSpan = '<span class="from" title="' + rule.from + '">' + textMinifier(rule.from) + '</span>';
-			var seperator = '<span class="seperator">&gt;</span>'
-			var toSpan = '<span class="to" title="' + rule.to + '">' + textMinifier(rule.to) + '</span>';
-			var checked = rule.isActive ? 'checked="checked"' : '';
-			var active = '<input type="checkbox" class="active" name="active" ' + checked + '/>'
-			var removeLink = '<a href="#" class="removeRuleButton">Remove</a>';		
-			li.append(fromSpan + seperator + toSpan + active + removeLink);
-			rulesUl.append(li);
-		}
-	}
-	else
-	{
-		$('#no-rules').show();
-		$('#headings').hide();
+	$("#poolCheck").prop("checked", false);
+	$("#nopoolCheck").prop("checked", false);
+	$("#pool").hide();
+	$("#nopool").hide();
+
+	if (rules.pool) {
+		$("#poolCheck").prop("checked", true);
+		$("#pool").show();
+		emptyShowHide(true);
+	} else {
+		$("#nopoolCheck").prop("checked", true);
+		$("#nopool").show();
+		emptyShowHide(false);
 	}
 }
 
-function textMinifier(text){
-	var maxLength = 25;
-	if(text && text.length > maxLength){
-		text = text.substring(0,maxLength) + "...";
+function changeMode() {
+	if ($("#poolCheck").attr("checked")) {
+		$("#pool").show();
+		$("#nopool").hide();
+		emptyShowHide(true);
+	} else {
+		$("#nopool").show();
+		$("#pool").hide();
+		emptyShowHide(false);
 	}
-
-	return text;
 }
 
-function addRule() {
-	var fromInput, toInput, typeDropDown;
+function emptyShowHide(isPool) {
+	buddyContainer.empty();
+	var buddy;
+	var text;
+    if (isPool) { 
+    	buddy = rules.user_id
+		text = "You are a member of the Associates pool: " + buddy;
+    } else { 
+    	buddy = rules.buddy_id
+    	text = "Your buddy is " + buddy
+    }
 
-	fromInput = newRuleDiv.children('#fromInput');
-	toInput = newRuleDiv.children('#toInput');
+	if (buddy !== undefined) {
+		$(".empty").hide();
+		var li = $('<li class="buddy"/>');
+		var removeLink = '<a href="#" class="removeRuleButton">Change</a>';		
+		li.append(text + removeLink);
+		buddyContainer.append(li);
+		$(".full").show();
+	} else {
+		$(".full").hide();
+		$(".empty").show();
+	}
+}
 
-	var newRule = {
-		from : fromInput.val(),
-		to : toInput.val(),
-		isActive: true
-	};
+function addBuddy() {
+	var buddy = $("#tag").val();
 
 	chrome.extension.sendMessage({
-		rule : newRule
+		addBuddy : buddy
 	}, function(response) {
 		rules = response.rules;
 		refreshRules();
 	});
 
-	fromInput.val('');
-	toInput.val('');
+	$("#tag").val("");
+}
+function addSelf() {
+	var buddy = $("#pooltag").val();
+
+	chrome.extension.sendMessage({
+		addUser : buddy
+	}, function(response) {
+		rules = response.rules;
+		refreshRules();
+	});
+
+	$("#pooltag").val("");
 }
 
 function removeAllRules() {
@@ -69,14 +92,6 @@ function removeAllRules() {
 	});
 }
 
-function toggleRule(index){
-	chrome.extension.sendMessage({
-		toggleIndex : index
-	}, function(response) {
-		rules = response.rules;
-		refreshRules();
-	});
-}
 
 function editRule(index, rule) {
 	
@@ -136,8 +151,9 @@ function getRuleFromListItem(listItem){
 
 
 $(document).ready(function() {
-	rulesUl = $('#rules');
-	newRuleDiv = $('#new-rule')
+	buddyContainer = $(".full");
+	nopoolDiv = $('#nopool');
+	poolDiv = $('#pool');
 	
 	chrome.extension.sendMessage({
 		getRules : true
@@ -146,13 +162,17 @@ $(document).ready(function() {
 		refreshRules();
 	});
 
+	$("input[name=mode]:radio").change(function () {
+		changeMode();
+	});
+
 	$('#tagBtn').click(function() {
-		addRule();
+		addBuddy();
+	});
+	$('#pooltagBtn').click(function() {
+		addSelf();
 	});
 	
-	$('#resetBtn').click(function() {
-		removeAllRules();
-	});
 
 	$('#rules').delegate('.active', 'click', function() {
 		toggleRule(parseInt($(this).parent().attr('data-rule-index')));
@@ -173,5 +193,5 @@ $(document).ready(function() {
 		});		
 	});	
 
-	$('#fromInput').focus();
+	$('input[name=name]').focus();
 });
