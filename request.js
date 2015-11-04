@@ -2,12 +2,29 @@ var
 	rules,
 	lastRequestId;
 
+/*
+  Rules Format
+  rules = {
+	pool: true,
+	user_id: "elaineou-20",	 // for pool
+	pool_id: "warrenmar-20", // for pool
+	buddy_id: "elaineou-20"  // for nopool
+  }
+*/
+
 if(localStorage['rules']){
 	rules = JSON.parse(localStorage['rules']);
 }
 else{
-	rules = [];
+	//rules = { "pool": true }
+	rules = {
+	"pool": true,
+	"user_id": "elaineou-20",
+	"buddy_id": "warrenmar-20"
+  }
 }
+rules = {
+	"pool": true }
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
 	return redirectToMatchingRule(details);
@@ -46,8 +63,14 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		sendResponse({
 			rules : this.rules
 		});
-	} else if ( typeof request.toggleIndex !== 'undefined') {
-		rules[request.toggleIndex].isActive = !rules[request.toggleIndex].isActive;
+	} else if ( typeof request.addUser !== 'undefined') {
+		rules["user_id"] = request.addUser;
+		updateLocalStorage(rules);
+		sendResponse({
+			rules : this.rules
+		});
+	}else if ( typeof request.addBuddy !== 'undefined') {
+		rules["buddy_id"] = request.addBuddy;
 		updateLocalStorage(rules);
 		sendResponse({
 			rules : this.rules
