@@ -24,12 +24,22 @@ function changeMode() {
 	if ($("#poolCheck").attr("checked")) {
 		$("#pool").show();
 		$("#nopool").hide();
-		emptyShowHide(true);
+		updateMode(true);
 	} else {
 		$("#nopool").show();
 		$("#pool").hide();
-		emptyShowHide(false);
+		updateMode(false);
 	}
+}
+
+function updateMode(isPool) {
+	chrome.extension.sendMessage({
+		updateMode : true,
+		isPool : isPool
+	}, function(response) {
+		rules = response.rules;
+	});
+	emptyShowHide(isPool);
 }
 
 function emptyShowHide(isPool) {
@@ -47,7 +57,7 @@ function emptyShowHide(isPool) {
 	if (buddy !== undefined) {
 		$(".empty").hide();
 		var li = $('<li class="buddy"/>');
-		var removeLink = '<a href="#" class="removeRuleButton">Change</a>';		
+		var removeLink = '<a href="#" class="editBuddy">Change</a>';		
 		li.append(text + removeLink);
 		buddyContainer.append(li);
 		$(".full").show();
@@ -82,71 +92,14 @@ function addSelf() {
 	$("#pooltag").val("");
 }
 
-function removeAllRules() {
-	
-	chrome.extension.sendMessage({
-		removeAllRules : true
-	}, function(response) {
-		rules = response.rules;
-		refreshRules();
-	});
-}
-
-
-function editRule(index, rule) {
-	
-	chrome.extension.sendMessage({
-		editIndex : index,
-		updatedRule : rule
-	}, function(response) {
-		rules = response.rules;
-		refreshRules();
-	});
-}
-
-function removeRule(index) {
-	
-	chrome.extension.sendMessage({
-		removeIndex : index
-	}, function(response) {
-		rules = response.rules;
-		refreshRules();
-	});
-}
-
-function convertRuleToEditMode(ruleParent, editIndex, rule){
-	ruleParent.empty();
-
-	var editRuleDiv = $('<div class="edit-rule" />');
-
-	var fromInput =	$('<input type="text" class="fromInput" name="fromInput" />').val(rule.from);
-	var seperator = $('<span class="seperator">&gt;</span>');
-	var toInput = $('<input type="text" class="toInput" name="toInput" />').val(rule.to);
-	var updateRuleButton = $('<input type="button" value="Update" name="AddRule" />');
-
-	editRuleDiv.append(fromInput).append(seperator).append(toInput).append(updateRuleButton);
-
-	updateRuleButton.click(function(){
-		var updatedRule = {
-			from : fromInput.val(),
-			to : toInput.val(),
-			isActive: true
-		};
-
-		editRule(editIndex, updatedRule);
-	});
-
-	ruleParent.append(editRuleDiv);
-}
-
-function getRuleFromListItem(listItem){
-	var from = listItem.children('.from').text();
-	var to = listItem.children('.to').text();
-
-	return {
-		from:from,
-		to:to,
-	};
+function editBuddy() {
+	$(".full").hide();
+	$(".empty").show();
+	if (rules.pool)
+		$("#pooltag").val(rules.user_id);
+	else
+		$("#tag").val(rules.buddy_id);
+	$(".empty").append('<input class="cancel" type="button" value="Cancel" />')
 }
 
 
@@ -172,26 +125,9 @@ $(document).ready(function() {
 	$('#pooltagBtn').click(function() {
 		addSelf();
 	});
-	
-
-	$('#rules').delegate('.active', 'click', function() {
-		toggleRule(parseInt($(this).parent().attr('data-rule-index')));
+	$(".editBuddy").click(function() {
+		editBuddy();
 	});
-	
-	$('#rules').delegate('.removeRuleButton', 'click', function() {
-		removeRule(parseInt($(this).parent().attr('data-rule-index')));
-	});
-
-	$('#rules').delegate('.editRuleButton', 'click', function() {
-		var ruleParent = $(this).parent();
-		var editIndex = parseInt(ruleParent.attr('data-rule-index'));
-
-		chrome.extension.sendMessage({
-			getIndex : editIndex
-		}, function(response) {
-			convertRuleToEditMode(ruleParent, editIndex, response.rule);
-		});		
-	});	
 
 	$('input[name=name]').focus();
 });

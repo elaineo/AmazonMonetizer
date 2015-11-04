@@ -69,9 +69,16 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		sendResponse({
 			rules : this.rules
 		});
-	}else if ( typeof request.addBuddy !== 'undefined') {
+	} else if ( typeof request.addBuddy !== 'undefined') {
 		rules["buddy_id"] = request.addBuddy;
 		updateLocalStorage(rules);
+		sendResponse({
+			rules : this.rules
+		});
+	} else if ( typeof request.updateMode !== 'undefined') {
+		rules["pool"] = request.isPool;
+		updateLocalStorage(rules);
+		// update remote storage too
 		sendResponse({
 			rules : this.rules
 		});
