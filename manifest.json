@@ -9,8 +9,29 @@
 		"default_title": "Add amazon affiliate.",
 		"default_popup": "amzn.html"
 	},
-	"permissions": ["webRequest", "webRequestBlocking", 
-					"http://www.amazon.com/*", "tabs"],
+	"permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "http://www.amazon.com/*",
+        "https://www.amazon.com/*",
+        "http://www.amazon.ca/*",
+        "https://www.amazon.ca/*",
+        "http://www.amazon.co.uk/*",
+        "https://www.amazon.co.uk/*",
+        "http://www.amazon.de/*",
+        "https://www.amazon.de/*",
+        "http://www.amazon.es/*",
+        "https://www.amazon.es/*",
+        "http://www.amazon.fr/*",
+        "https://www.amazon.fr/*",
+        "http://www.amazon.it/*",
+        "https://www.amazon.it/*",
+        "http://www.amazon.co.jp/*",
+        "https://www.amazon.co.jp/*",
+        "http://www.amazon.cn/*",
+        "https://www.amazon.cn/*",
+        "tabs"
+    ],
 	"background": {
 		"scripts": ["request.js"]
 	}

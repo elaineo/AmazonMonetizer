@@ -64,6 +64,7 @@ function emptyShowHide(isPool) {
 	} else {
 		$(".full").hide();
 		$(".empty").show();
+		$(".empty").children(".cancel").hide();
 	}
 }
 
@@ -99,7 +100,7 @@ function editBuddy() {
 		$("#pooltag").val(rules.user_id);
 	else
 		$("#tag").val(rules.buddy_id);
-	$(".empty").append('<input class="cancel" type="button" value="Cancel" />')
+	$(".empty").children(".cancel").show();
 }
 
 
@@ -128,6 +129,9 @@ $(document).ready(function() {
 	$(".editBuddy").click(function() {
 		editBuddy();
 	});
+	$(".cancel").click(function() {
+		cancelEdit();
+	})
 
 	$('input[name=name]').focus();
 });

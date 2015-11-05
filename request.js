@@ -16,20 +16,13 @@ if(localStorage['rules']){
 	rules = JSON.parse(localStorage['rules']);
 }
 else{
-	//rules = { "pool": true }
-	rules = {
-	"pool": true,
-	"user_id": "elaineou-20",
-	"buddy_id": "warrenmar-20"
-  }
+	rules = { "pool": true }
 }
-rules = {
-	"pool": true }
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
 	return redirectToMatchingRule(details);
 }, {
-	urls : ["http://www.amazon.com/*"]
+	urls : ["http://www.amazon.com/*", "https://www.amazon.com/*"]
 }, ["blocking"]);
 
 function redirectToMatchingRule(details) {
@@ -79,26 +72,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		rules["pool"] = request.isPool;
 		updateLocalStorage(rules);
 		// update remote storage too
+		// remove person from pool, or add person to pool
 		sendResponse({
 			rules : this.rules
 		});
-	} else if ( typeof request.editIndex !== 'undefined') {
-		rules[request.editIndex] = request.updatedRule;
-		updateLocalStorage(rules);
-		sendResponse({
-			rules : this.rules
-		});
-	} else if ( typeof request.removeIndex !== 'undefined') {
-		rules.splice(request.removeIndex, 1);
-		updateLocalStorage(rules);
-		sendResponse({
-			rules : this.rules
-		});
-	} else if ( typeof request.getIndex !== 'undefined') {
-		sendResponse({
-			rule : rules[request.getIndex]
-		});
-	}
+	} 
 });
 
 function updateLocalStorage(rules){
