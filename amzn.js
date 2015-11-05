@@ -102,7 +102,10 @@ function editBuddy() {
 		$("#tag").val(rules.buddy_id);
 	$(".empty").children(".cancel").show();
 }
-
+function cancelEdit() {
+	$(".full").show();
+	$(".empty").hide();
+}
 
 $(document).ready(function() {
 	buddyContainer = $(".full");
@@ -126,7 +129,7 @@ $(document).ready(function() {
 	$('#pooltagBtn').click(function() {
 		addSelf();
 	});
-	$(".editBuddy").click(function() {
+	$(document.body).on('click', '.editBuddy' ,function(){
 		editBuddy();
 	});
 	$(".cancel").click(function() {

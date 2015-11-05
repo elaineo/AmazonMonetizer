@@ -13,22 +13,31 @@ var
 */
 
 if(localStorage['rules']){
-	rules = JSON.parse(localStorage['rules']);
+	rules = { "pool": true }
+	//rules = JSON.parse(localStorage['rules']);
 }
 else{
 	rules = { "pool": true }
 }
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-	return redirectToMatchingRule(details);
+	return redirectToMatchingRule(details, rules);
 }, {
 	urls : ["http://www.amazon.com/*", "https://www.amazon.com/*"]
 }, ["blocking"]);
 
-function redirectToMatchingRule(details) {
+function redirectToMatchingRule(details, rules) {
 	// detect product page
 	console.log(details.url);
-	var tag = "&tag=elaineou-20";
+	// get appropriate tag
+	if (rules.pool) 
+		var tag = rules.pool_id;
+	else
+		var tag = rules.buddy_id;
+	if (tag === undefined)
+		tag = "&tag=elaineou-20"
+	else
+		tag = "&tag=" + tag
 	if ( ( details.url.indexOf("/dp/") > -1 || details.url.indexOf("/gp/") > -1 ) 
 											&& details.url.indexOf(tag) < 0 ) {
 		// get rid of other people's tags
@@ -40,13 +49,7 @@ function redirectToMatchingRule(details) {
 }
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-	if ( typeof request.rule !== 'undefined') {
-		rules.push(request.rule);
-		updateLocalStorage(rules);
-		sendResponse({
-			rules : this.rules
-		});
-	} else if ( typeof request.removeAllRules !== 'undefined') {
+	if ( typeof request.removeAllRules !== 'undefined') {
 		rules = [];
 		updateLocalStorage(rules)
 		sendResponse({
