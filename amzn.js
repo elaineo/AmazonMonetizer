@@ -37,9 +37,10 @@ function updateMode(isPool) {
 		updateMode : true,
 		isPool : isPool
 	}, function(response) {
+		console.log(response);
 		rules = response.rules;
+		emptyShowHide(isPool);
 	});
-	emptyShowHide(isPool);
 }
 
 function emptyShowHide(isPool) {
@@ -85,10 +86,6 @@ function addSelf() {
 
 	chrome.extension.sendMessage({
 		addUser : buddy
-	}, function(response) {
-		console.log(response);
-		rules = response.rules;
-		refreshRules();
 	});
 
 	$("#pooltag").val("");
@@ -107,6 +104,12 @@ function cancelEdit() {
 	$(".full").show();
 	$(".empty").hide();
 }
+
+chrome.extension.onMessage.addListener(
+	function(request, sender, sendResponse) { 
+		rules = request.rules; 
+		refreshRules();
+	});
 
 $(document).ready(function() {
 	buddyContainer = $(".full");

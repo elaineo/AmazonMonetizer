@@ -15,8 +15,8 @@ var POOL_SERVER = "http://127.0.0.1:3000/";
 	buddy_id: "elaineou-20"  // for nopool
   }
 */
-rules = { "pool": true }
-updateLocalStorage(rules)
+//rules = { "pool": true }
+//updateLocalStorage(rules)
 
 if(localStorage['rules']){
 	console.log(localStorage['rules']);
@@ -87,26 +87,30 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 function updateRemoteMode( callback ) {
 	var rules = JSON.parse(localStorage['rules']);
 	if (rules.pool && rules.user_db) {
-		updateUserDB(true); 
-		updatePoolID( callback );
+		updateUserDB(true, updatePoolID); 
+		//updatePoolID();
 	} else if (!rules.pool && rules.user_db) updateUserDB(false); 
 }
 
 // save a new user, inactivate existing user
 function updateRemoteUser( callback ) {
 	var rules = JSON.parse(localStorage['rules']);
-	if (rules.user_db) updateUserDB(false, newUserDB, callback);
-	else newUserDB( callback ); 
+	if (rules.user_db) updateUserDB(false, newUserDB);
+	else newUserDB(); 
 }
 
 // inactivate user in database after change
-function updateUserDB(is_pool, callback0, callback1) {
+function updateUserDB(is_pool, callback) {
 	var rules = JSON.parse(localStorage['rules']);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
 			console.log(JSON.parse(xmlhttp.responseText));
-			callback0(callback1);
+			if (callback === undefined) {
+				chrome.extension.sendMessage({rules: rules});
+				return;
+			}
+			callback();
 		}
 	}
 	if (is_pool) {
@@ -121,7 +125,7 @@ function updateUserDB(is_pool, callback0, callback1) {
 }
 
 // add user to database
-function newUserDB( callback ) {
+function newUserDB() {
 	var rules = JSON.parse(localStorage['rules']);
 	var tagData = {"tag": rules.user_id};
 	var xmlhttp = new XMLHttpRequest();
@@ -131,7 +135,7 @@ function newUserDB( callback ) {
 			console.log(newRule);
 			rules.user_db = newRule._id
 			updateLocalStorage(rules);
-			updatePoolID(callback);
+			updatePoolID();
 		}
 	}
  	xmlhttp.open("POST", POOL_SERVER + "create", true);
@@ -140,10 +144,10 @@ function newUserDB( callback ) {
 }
 
 // get a new poolbuddy, release old poolbuddy
-function updatePoolID(callback) {
+function updatePoolID() {
 	var rules = JSON.parse(localStorage['rules']);
 	if (rules.pool_id !== undefined)
-		var tagData = {"id": rules.pool_id};
+		var tagData = {"tag": rules.pool_id};
 	else
 		var tagData = {}
 	var xmlhttp = new XMLHttpRequest();
@@ -153,7 +157,7 @@ function updatePoolID(callback) {
 			console.log(newRule);
 			rules.pool_id = newRule.tag
 			updateLocalStorage(rules);
-			callback({rules: rules});
+			chrome.extension.sendMessage({rules: rules});
 		}
 	}
  	xmlhttp.open("POST", POOL_SERVER + "joinpool", true);
