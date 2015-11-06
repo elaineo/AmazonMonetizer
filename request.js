@@ -66,9 +66,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	} else if ( typeof request.addUser !== 'undefined') {
 		rules["user_id"] = request.addUser;
 		updateLocalStorage(rules);
-		sendResponse({
-			rules : this.rules
-		});
+		updateRemoteUser( sendResponse );
 	} else if ( typeof request.addBuddy !== 'undefined') {
 		rules["buddy_id"] = request.addBuddy;
 		updateLocalStorage(rules);
@@ -79,22 +77,49 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		rules["pool"] = request.isPool;
 		updateLocalStorage(rules);
 		// update remote storage too
-		// remove person from pool, or add person to pool
-		sendResponse({
-			rules : this.rules
-		});
+		updateRemoteMode( sendResponse );
 	} 
 });
 
-function updateRemote() {
-	if (rules.pool && rules.user_id) {
-		if (rules.user_db === undefined) updateUserDB();
-		if (rules.pool_id === undefined) updatePoolID();
-	} else if (!rules.pool && rules.user_db) removeUserDB(); 
+// activate or inactivate existing user
+function updateRemoteMode( callback ) {
+	var rules = JSON.parse(localStorage['rules']);
+	if (rules.pool && rules.user_db) {
+		updateUserDB(true); 
+		updatePoolID( callback );
+	} else if (!rules.pool && rules.user_db) updateUserDB(false); 
+}
+
+// save a new user, inactivate existing user
+function updateRemoteUser( callback ) {
+	var rules = JSON.parse(localStorage['rules']);
+	if (rules.user_db) updateUserDB(false, newUserDB);
+	else newUserDB( callback ); 
+}
+
+// inactivate user in database after change
+function updateUserDB(is_pool, callback) {
+	var rules = JSON.parse(localStorage['rules']);
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
+			callback;
+		}
+	}
+	if (is_pool) {
+	 	xmlhttp.open("POST", POOL_SERVER + "create", true);
+	 	var tagData = {"tag": rules.user_id};
+	 } else {
+	 	xmlhttp.open("POST", POOL_SERVER + "inactivate", true);
+	 	var tagData = {"tag": rules.user_db};
+	 }
+ 	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify(tagData));
 }
 
 // add user to database
-function updateUserDB(rules) {
+function newUserDB( callback ) {
+	var rules = JSON.parse(localStorage['rules']);
 	var tagData = {"tag": rules.user_id};
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
@@ -102,6 +127,7 @@ function updateUserDB(rules) {
 			var newRule = JSON.parse(xmlhttp.responseText);
 			rules.user_db = newRule._id
 			updateLocalStorage(rules);
+			callback({rules: rules})
 		}
 	}
  	xmlhttp.open("POST", POOL_SERVER + "create", true);
@@ -109,17 +135,23 @@ function updateUserDB(rules) {
     xmlhttp.send(JSON.stringify(tagData));
 }
 
-function updatePoolID(rules) {
-	var tagData = {"tag": rules.user_id};
+// get a new poolbuddy, release old poolbuddy
+function updatePoolID(callback) {
+	var rules = JSON.parse(localStorage['rules']);
+	if (rules.pool_id !== undefined)
+		var tagData = {"id": rules.pool_id};
+	else
+		var tagData = {}
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
 			var newRule = JSON.parse(xmlhttp.responseText);
-			rules.user_db = newRule._id
+			rules.pool_id = newRule.tag
 			updateLocalStorage(rules);
+			callback({rules: rules});
 		}
 	}
- 	xmlhttp.open("POST", POOL_SERVER + "create", true);
+ 	xmlhttp.open("POST", POOL_SERVER + "joinpool", true);
  	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify(tagData));
 }
