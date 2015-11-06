@@ -17,7 +17,6 @@ exports.index = function(req, res){
 exports.create = function ( req, res ){
   console.log(req.body)
   Amzn.addTag(req.body.tag, function (err, tag) {
-    console.log(tag)
     res.write(JSON.stringify(tag));
     res.send();
   })
@@ -34,19 +33,22 @@ exports.inactivate = function ( req, res ){
 
 exports.joinpool = function(req, res){
   console.log(req.body)
-  if (req.body.id) {
+  if (req.body.id !== undefined) {
     Amzn.findById( req.body.id, function ( err, r ){
       r.release();
+      sendAvailable(res);
     });
-  }
-  // get a random user
+  } else sendAvailable(res);
+};
+function sendAvailable(res) {
+    // get a random user
   Amzn.findAvailable( function ( err, tags, count ){
     var tag = tags[Math.floor(Math.random()*tags.length)];
     tag.put_in_use();
     res.write(JSON.stringify(tag));
     res.send();
   });
-};
+}
 
 exports.destroy = function ( req, res ){
   Amzn.findById( req.body.id, function ( err, r ){

@@ -15,6 +15,8 @@ var POOL_SERVER = "http://127.0.0.1:3000/";
 	buddy_id: "elaineou-20"  // for nopool
   }
 */
+rules = { "pool": true }
+updateLocalStorage(rules)
 
 if(localStorage['rules']){
 	console.log(localStorage['rules']);
@@ -93,17 +95,18 @@ function updateRemoteMode( callback ) {
 // save a new user, inactivate existing user
 function updateRemoteUser( callback ) {
 	var rules = JSON.parse(localStorage['rules']);
-	if (rules.user_db) updateUserDB(false, newUserDB);
+	if (rules.user_db) updateUserDB(false, newUserDB, callback);
 	else newUserDB( callback ); 
 }
 
 // inactivate user in database after change
-function updateUserDB(is_pool, callback) {
+function updateUserDB(is_pool, callback0, callback1) {
 	var rules = JSON.parse(localStorage['rules']);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
-			callback;
+			console.log(JSON.parse(xmlhttp.responseText));
+			callback0(callback1);
 		}
 	}
 	if (is_pool) {
@@ -111,7 +114,7 @@ function updateUserDB(is_pool, callback) {
 	 	var tagData = {"tag": rules.user_id};
 	 } else {
 	 	xmlhttp.open("POST", POOL_SERVER + "inactivate", true);
-	 	var tagData = {"tag": rules.user_db};
+	 	var tagData = {"id": rules.user_db};
 	 }
  	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify(tagData));
@@ -125,9 +128,10 @@ function newUserDB( callback ) {
 	xmlhttp.onreadystatechange = function() {
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
 			var newRule = JSON.parse(xmlhttp.responseText);
+			console.log(newRule);
 			rules.user_db = newRule._id
 			updateLocalStorage(rules);
-			callback({rules: rules})
+			updatePoolID(callback);
 		}
 	}
  	xmlhttp.open("POST", POOL_SERVER + "create", true);
@@ -146,6 +150,7 @@ function updatePoolID(callback) {
 	xmlhttp.onreadystatechange = function() {
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
 			var newRule = JSON.parse(xmlhttp.responseText);
+			console.log(newRule);
 			rules.pool_id = newRule.tag
 			updateLocalStorage(rules);
 			callback({rules: rules});

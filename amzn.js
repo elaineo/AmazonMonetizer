@@ -86,6 +86,7 @@ function addSelf() {
 	chrome.extension.sendMessage({
 		addUser : buddy
 	}, function(response) {
+		console.log(response);
 		rules = response.rules;
 		refreshRules();
 	});
