@@ -2,18 +2,18 @@ var mongoose = require( 'mongoose' );
 var Schema   = mongoose.Schema;
 
 var Amzn = new Schema({
-    tag       : String,
+    tag       : {type: String, lowercase: true, unique: true},
     active    : Boolean,
     in_use    : Boolean,
     created_at : Date,
     updated_at : Date
 });
 
-Amzn.methods.findByTag = function (tag) {
-    return this.model('Amzn').find({tag: this.tag}, tag)
+Amzn.statics.findByTag = function (tag) {
+    return this.find({tag: this.tag}, tag)
 }
-Amzn.methods.findAvailable = function (callback) {
-    return this.model('Amzn').find({active: true, in_use:false}, callback)
+Amzn.statics.findAvailable = function (callback) {
+    return this.find({active: true, in_use:false}, callback)
 }
 Amzn.statics.findAndModify = function (query, sort, doc, options, callback) {
   return this.collection.findAndModify(query, sort, doc, options, callback);
@@ -23,7 +23,13 @@ Amzn.statics.addTag = function (tag, callback) {
     return this.findOneAndUpdate(
       {tag: tag},
       {"tag": tag, "active": true, "in_use": false},
-      { new: false, upsert: false}, callback  );
+      { upsert: true}, callback  );
+}
+Amzn.statics.createTag = function (tag, callback) {
+    // should be able to pass in doc, i'm too lazy to care
+    return this.create(
+      {"tag": tag, "active": true, "in_use": false},
+      callback  );
 }
 
 Amzn.methods.put_in_use = function (cb) {
@@ -48,7 +54,7 @@ Amzn.methods.inactivate = function (cb) {
 }
 
 var amznDB = mongoose.model('Amzn', Amzn);
-module.exports.Raffle = mongoose.model('Amzn');
+module.exports.Amzn = mongoose.model('Amzn');
 
 Amzn.pre('save', function(next){
   now = new Date();

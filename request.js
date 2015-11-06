@@ -2,19 +2,23 @@ var
 	rules,
 	lastRequestId;
 
+var POOL_SERVER = "http://127.0.0.1:3000/";
+// var POOL_SERVER = "http://52.32.21.141/";
+
 /*
   Rules Format
   rules = {
 	pool: true,
 	user_id: "elaineou-20",	 // for pool
+	user_db: "1231234",      // for server db
 	pool_id: "warrenmar-20", // for pool
 	buddy_id: "elaineou-20"  // for nopool
   }
 */
 
 if(localStorage['rules']){
-	rules = { "pool": true }
-	//rules = JSON.parse(localStorage['rules']);
+	console.log(localStorage['rules']);
+	rules = JSON.parse(localStorage['rules']);
 }
 else{
 	rules = { "pool": true }
@@ -81,6 +85,44 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		});
 	} 
 });
+
+function updateRemote() {
+	if (rules.pool && rules.user_id) {
+		if (rules.user_db === undefined) updateUserDB();
+		if (rules.pool_id === undefined) updatePoolID();
+	} else if (!rules.pool && rules.user_db) removeUserDB(); 
+}
+
+// add user to database
+function updateUserDB(rules) {
+	var tagData = {"tag": rules.user_id};
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
+			var newRule = JSON.parse(xmlhttp.responseText);
+			rules.user_db = newRule._id
+			updateLocalStorage(rules);
+		}
+	}
+ 	xmlhttp.open("POST", POOL_SERVER + "create", true);
+ 	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify(tagData));
+}
+
+function updatePoolID(rules) {
+	var tagData = {"tag": rules.user_id};
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
+			var newRule = JSON.parse(xmlhttp.responseText);
+			rules.user_db = newRule._id
+			updateLocalStorage(rules);
+		}
+	}
+ 	xmlhttp.open("POST", POOL_SERVER + "create", true);
+ 	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.send(JSON.stringify(tagData));
+}
 
 function updateLocalStorage(rules){
 	localStorage['rules'] = JSON.stringify(rules);
