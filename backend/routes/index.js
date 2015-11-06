@@ -15,7 +15,6 @@ exports.index = function(req, res){
 };
 
 exports.create = function ( req, res ){
-  console.log(req.body)
   Amzn.addTag(req.body.tag, function (err, tag) {
     res.write(JSON.stringify(tag));
     res.send();
@@ -23,7 +22,6 @@ exports.create = function ( req, res ){
 };
 
 exports.inactivate = function ( req, res ){
-  console.log(req.body)
   Amzn.findById(req.body.id, function (err, tag) {
     tag.inactivate();
     res.write(JSON.stringify(tag));
@@ -32,7 +30,6 @@ exports.inactivate = function ( req, res ){
 };
 
 exports.joinpool = function(req, res){
-  console.log(req.body)
   if (req.body.id !== undefined) {
     Amzn.findById( req.body.id, function ( err, r ){
       r.release();
