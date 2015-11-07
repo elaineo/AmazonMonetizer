@@ -1,8 +1,6 @@
-var rules = { "pool": true }
-var rulesUl, newRuleDiv;
-var buddyContainer;
+var rules;
 
-function refreshRules() {
+function refreshRules(rules) {
 
 	$("#poolCheck").prop("checked", false);
 	$("#nopoolCheck").prop("checked", false);
@@ -22,13 +20,9 @@ function refreshRules() {
 
 function changeMode() {
 	if ($("#poolCheck").attr("checked")) {
-		$("#pool").show();
-		$("#nopool").hide();
-		updateMode(true);
+		refreshRules({"pool": true})
 	} else {
-		$("#nopool").show();
-		$("#pool").hide();
-		updateMode(false);
+		refreshRules({"pool": false})
 	}
 }
 
@@ -76,7 +70,7 @@ function addBuddy() {
 		addBuddy : buddy
 	}, function(response) {
 		rules = response.rules;
-		refreshRules();
+		refreshRules(rules);
 	});
 
 	$("#tag").val("");
@@ -107,8 +101,11 @@ function cancelEdit() {
 
 chrome.extension.onMessage.addListener(
 	function(request, sender, sendResponse) { 
-		rules = request.rules; 
-		refreshRules();
+		console.log(request);
+		if (request.rules !== undefined) {
+			rules = request.rules; 
+		 	refreshRules(rules);
+	 	}
 	});
 
 $(document).ready(function() {
@@ -120,7 +117,7 @@ $(document).ready(function() {
 		getRules : true
 	}, function(response) {
 		rules = response.rules;
-		refreshRules();
+		refreshRules(rules);
 	});
 
 	$("input[name=mode]:radio").change(function () {

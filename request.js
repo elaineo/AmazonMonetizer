@@ -100,10 +100,13 @@ function updateRemoteUser( callback ) {
 }
 
 // inactivate user in database after change
+// also release buddy
 function updateUserDB(is_pool, callback) {
+	console.log("updateUserDB");
 	var rules = JSON.parse(localStorage['rules']);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
+		console.log(xmlhttp.readyState);
 		if(xmlhttp.readyState == XMLHttpRequest.DONE) {
 			console.log(JSON.parse(xmlhttp.responseText));
 			if (callback === undefined) {
@@ -118,7 +121,7 @@ function updateUserDB(is_pool, callback) {
 	 	var tagData = {"tag": rules.user_id};
 	 } else {
 	 	xmlhttp.open("POST", POOL_SERVER + "inactivate", true);
-	 	var tagData = {"id": rules.user_db};
+	 	var tagData = {"id": rules.user_db, "pool": rules.pool_id};
 	 }
  	xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify(tagData));
@@ -126,6 +129,7 @@ function updateUserDB(is_pool, callback) {
 
 // add user to database
 function newUserDB() {
+	console.log("newUserDB");
 	var rules = JSON.parse(localStorage['rules']);
 	var tagData = {"tag": rules.user_id};
 	var xmlhttp = new XMLHttpRequest();
@@ -145,6 +149,7 @@ function newUserDB() {
 
 // get a new poolbuddy, release old poolbuddy
 function updatePoolID() {
+	console.log("updatePoolID");
 	var rules = JSON.parse(localStorage['rules']);
 	if (rules.pool_id !== undefined)
 		var tagData = {"tag": rules.pool_id};
