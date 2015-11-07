@@ -43,15 +43,15 @@ function emptyShowHide(isPool) {
 	var text;
     if (isPool) { 
     	buddy = rules.user_id
-		text = "You are a member of the Associates pool: " + buddy;
+		text = "You are a member of the Associates pool: <span class='buddy'>" + buddy + "</span>";
     } else { 
     	buddy = rules.buddy_id
-    	text = "Your buddy is " + buddy
+    	text = "Your buddy is: <span class='buddy'>" + buddy + "</span>"
     }
 
 	if (buddy !== undefined) {
 		$(".empty").hide();
-		var li = $('<li class="buddy"/>');
+		var li = $('<p />');
 		var removeLink = '<a href="#" class="editBuddy">Change</a>';		
 		li.append(text + removeLink);
 		buddyContainer.append(li);

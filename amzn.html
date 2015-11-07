@@ -3,41 +3,143 @@
 	<head>
 		<title>Amazon Monetizer</title>
 		<style>
-			body{width:650px; font-family: sans-serif;}
-			a, span {padding: 10px;}
-			ul { list-style-type: none; padding: 0; margin: 0 0 5px 0;}
-			#new-rule input[type=text], .edit-rule input[type=text]{width:220px; margin: 0 5px;}
-			.from, .to { font-family: monospace; width: 220px; display: inline-block; }
-			.seperator { font-weight: bold; color: red; }
-			#headings span { font-family: Arial; font-weight: bold; color: #def; padding: 5px 10px;}
-			#no-rules { padding: 10px; color: #666; }
-			.switcheroo {color: red;}
-			#removeAllRulesButton { margin: 10px; }
-			#new-rule, .edit-rule { margin-left: 3px; }
-			.edit-rule .seperator {padding-right: 18px;}
+			body{width:650px; background: rgba(19, 35, 47, 0.9); font-family: 'Titillium Web', sans-serif;
+			font-size: 18px; 
+			line-height: 1.5em;}
+			div {
+				margin: 20px 0px 0 10px;
+			}
+			.buddy {color:#fff;}
+			a {
+			  text-decoration: none;
+			  color: #a0b3b0;
+			  -webkit-transition: .5s ease;
+			          transition: .5s ease;
+			  margin: 10px;
+			  margin-left: 30px;
+			  padding: 10px;
+			background: rgba(160, 179, 176, 0.25);;
+			}
+			a:hover {
+			  color: #179b77;
+			}
+
+			p {
+			  color:#a0b3b0;
+			  font-weight:300;
+			  margin:0 0 40px;
+			}
+
+			::-webkit-input-placeholder {
+			  color:rgba(#ffffff,.5);
+			  transition:all 0.25s ease;
+			  pointer-events: none;
+			  font-size:14px;
+			  .req {
+			  	margin:2px;
+			  	color:#1ab188;
+			  }
+			}
+
+			input {
+			  font-size:18px;
+			  display:inline;
+			  width:380px;
+			  height:100%;
+			  padding:5px 10px;
+			  background:none;
+			  background-image:none;
+			  border:1px solid #a0b3b0;
+			  color:#ffffff;
+			  border-radius:0;
+			  -webkit-transition: border-color .25s ease, box-shadow .25s ease;
+          transition: border-color .25s ease, box-shadow .25s ease;
+}
+
+			input:focus {
+				outline:0;
+				border-color:#1ab188;
+			  }
+
+			input[type="button"] {
+			  font-size: 16px;
+			  border:0;
+			  width:100px;
+			  outline:none;
+			  border-radius:0;
+			  padding:10px 0;
+			  text-transform:uppercase;
+			  letter-spacing:.1em;
+			  background:#1ab188;
+			  color:#ffffff;
+			  transition:all.5s ease;
+			  -webkit-appearance: none;
+
+			}
+			  input[type="button"]:hover, input[type="button"]:focus {
+			    background: #179b77;
+}
+			
+
+			input[type="radio"] {
+			    display:none;
+			}
+			input[type="radio"] + label {
+			    color: #ffffff;
+			    font-family:Arial, sans-serif;
+			    font-size:14px;
+			}
+			input[type="radio"] + label span {
+			    display:inline-block;
+			    width:19px;
+			    height:19px;
+			    margin:-1px 4px 0 0;
+			    vertical-align:middle;
+			    cursor:pointer;
+			    -moz-border-radius:  50%;
+			    border-radius:  50%;
+			}
+
+			input[type="radio"] + label span {
+			     background-color:#ffffff;
+			}
+
+			input[type="radio"]:checked + label span{
+			     background-color:#1ab188;
+			}
+
+			input[type="radio"] + label span,
+			input[type="radio"]:checked + label span {
+			  -webkit-transition:background-color 0.4s linear;
+			  -o-transition:background-color 0.4s linear;
+			  -moz-transition:background-color 0.4s linear;
+			  transition:background-color 0.4s linear;
+			}
 		</style>
 		<script type="text/javascript" src="jquery.js"></script>
 		<script type="text/javascript" async src="amzn.js"></script>
 	</head>
 	<body>
-		<input type="radio" name="mode" id="poolCheck">Join the Associates pool and get a random buddy<br>
-		<input type="radio" name="mode" id="nopoolCheck">Choose my own Amazon Associates buddy
+		<div>
+		<input type="radio" name="mode" id="poolCheck"><label for="poolCheck"><span></span>Join the Associates pool and get a random buddy</label><br>
+		<input type="radio" name="mode" id="nopoolCheck"><label for="nopoolCheck"><span></span>Choose my own Amazon Associates buddy</label>
+		</div>
 		<div id="pool">
 			<div class="empty">
-				Enter your Associates ID: 
-				<input type="text" id="pooltag" name="tag" />
-				<input id="pooltagBtn" type="button" value="Join" name="SaveTag" />
-				<input class="cancel" type="button" value="Cancel" />
+				<input type="text" id="pooltag" name="tag" placeholder="Enter your Associates ID"/>
+				<input id="pooltagBtn" class="button" type="button" value="Join" name="SaveTag" />
+				<input class="cancel button" type="button" value="Cancel" />
 			</div>
 			<div class="full"></div>
 		</div>
 		<div id="nopool">
-		  <div class="empty">Enter an Amazon Associates ID (don't use your own; Amazon isn't that dumb).<br>
-				<input type="text" id="tag" name="tag" />
-				<input id="tagBtn" type="button" value="Save" name="SaveTag" />
-				<input class="cancel" type="button" value="Cancel" />
+		  <div class="empty">
+				<input type="text" id="tag" name="tag" placeholder="Enter an Amazon Associates ID (don't use your own)"/>
+				<input id="tagBtn" class="button" type="button" value="Save" name="SaveTag" />
+				<input class="cancel button" type="button" value="Cancel" />
 		  </div>
 			<div class="full"></div>
 		</div>
+		</p>
 	</body>
 </html>
