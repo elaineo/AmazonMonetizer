@@ -2,8 +2,8 @@ var
 	rules,
 	lastRequestId;
 
-var POOL_SERVER = "http://127.0.0.1:3000/";
-// var POOL_SERVER = "http://52.32.21.141/";
+//var POOL_SERVER = "http://127.0.0.1:3000/";
+ var POOL_SERVER = "http://52.32.149.220/";
 
 /*
   Rules Format
