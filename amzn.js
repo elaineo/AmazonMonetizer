@@ -20,8 +20,10 @@ function refreshRules(rules) {
 
 function changeMode() {
 	if ($("#poolCheck").attr("checked")) {
+		updateMode(true)
 		refreshRules({"pool": true})
 	} else {
+		updateMode(false)
 		refreshRules({"pool": false})
 	}
 }
