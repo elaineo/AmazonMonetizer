@@ -3,125 +3,42 @@
 	<head>
 		<title>Amazon Monetizer</title>
 		<style>
-			body{width:650px; background: rgba(19, 35, 47, 0.9); font-family: 'Titillium Web', sans-serif;
-			font-size: 18px; 
-			line-height: 1.5em;}
-			div {
-				margin: 20px 0px 0 10px;
-			}
-			.buddy {color:#fff;}
-			a {
-			  text-decoration: none;
-			  color: #a0b3b0;
-			  -webkit-transition: .5s ease;
-			          transition: .5s ease;
-			  margin: 10px;
-			  margin-left: 30px;
-			  padding: 10px;
-			background: rgba(160, 179, 176, 0.25);;
-			}
-			a:hover {
-			  color: #179b77;
-			}
-
-			p {
-			  color:#a0b3b0;
-			  font-weight:300;
-			  margin:0 0 40px;
-			}
-
-			::-webkit-input-placeholder {
-			  color:rgba(#ffffff,.5);
-			  transition:all 0.25s ease;
-			  pointer-events: none;
-			  font-size:14px;
-			  .req {
-			  	margin:2px;
-			  	color:#1ab188;
-			  }
-			}
-
-			input {
-			  font-size:18px;
-			  display:inline;
-			  width:380px;
-			  height:100%;
-			  padding:5px 10px;
-			  background:none;
-			  background-image:none;
-			  border:1px solid #a0b3b0;
-			  color:#ffffff;
-			  border-radius:0;
-			  -webkit-transition: border-color .25s ease, box-shadow .25s ease;
-          transition: border-color .25s ease, box-shadow .25s ease;
-}
-
-			input:focus {
-				outline:0;
-				border-color:#1ab188;
-			  }
-
-			input[type="button"] {
-			  font-size: 16px;
-			  border:0;
-			  width:100px;
-			  outline:none;
-			  border-radius:0;
-			  padding:10px 0;
-			  text-transform:uppercase;
-			  letter-spacing:.1em;
-			  background:#1ab188;
-			  color:#ffffff;
-			  transition:all.5s ease;
-			  -webkit-appearance: none;
-
-			}
-			  input[type="button"]:hover, input[type="button"]:focus {
-			    background: #179b77;
-}
-			
-
-			input[type="radio"] {
-			    display:none;
-			}
-			input[type="radio"] + label {
-			    color: #ffffff;
-			    font-family:Arial, sans-serif;
-			    font-size:14px;
-			}
-			input[type="radio"] + label span {
-			    display:inline-block;
-			    width:19px;
-			    height:19px;
-			    margin:-1px 4px 0 0;
-			    vertical-align:middle;
-			    cursor:pointer;
-			    -moz-border-radius:  50%;
-			    border-radius:  50%;
-			}
-
-			input[type="radio"] + label span {
-			     background-color:#ffffff;
-			}
-
-			input[type="radio"]:checked + label span{
-			     background-color:#1ab188;
-			}
-
-			input[type="radio"] + label span,
-			input[type="radio"]:checked + label span {
-			  -webkit-transition:background-color 0.4s linear;
-			  -o-transition:background-color 0.4s linear;
-			  -moz-transition:background-color 0.4s linear;
-			  transition:background-color 0.4s linear;
-			}
+		html{box-sizing:border-box}
+		*,:before,:after{box-sizing:inherit}
+		body{width:650px;background:rgba(19,35,47,0.9);font-family:'Titillium Web',sans-serif;font-size:18px;line-height:1.5em}
+		div{margin:20px 0 0 10px}
+		.buddy{color:#fff}
+		a.editBuddy{text-decoration:none;color:#a0b3b0;-webkit-transition:.5s ease;transition:.5s ease;margin:10px;margin-left:30px;padding:10px;background:rgba(160,179,176,0.25)}
+		a.editBuddy:hover{color:#179b77}
+		p{color:#a0b3b0;font-weight:300;margin:0 0 40px}
+		input{font-size:18px;display:inline;width:380px;height:100%;padding:5px 10px;background:none;background-image:none;border:1px solid #a0b3b0;color:#fff;border-radius:0;-webkit-transition:border-color .25s ease,box-shadow .25s ease;transition:border-color .25s ease,box-shadow .25s ease}
+		input:focus{outline:0;border-color:#1ab188}
+		input[type="button"]{font-size:16px;border:0;width:100px;outline:none;border-radius:0;padding:10px 0;text-transform:uppercase;letter-spacing:.1em;background:#1ab188;color:#fff;transition:all.5s ease;-webkit-appearance:none}
+		input[type="button"]:hover,input[type="button"]:focus{background:#179b77}
+		input[type="radio"]{display:none}
+		input[type="radio"] + label{color:#fff;font-family:Arial,sans-serif;font-size:14px}
+		input[type="radio"] + label span{display:inline-block;width:19px;height:19px;margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;-moz-border-radius:50%;border-radius:50%;background-color:#fff}
+		input[type="radio"]:checked + label span{background-color:#1ab188}
+		input[type="radio"] + label span,input[type="radio"]:checked + label span{-webkit-transition:background-color .4s linear;-o-transition:background-color .4s linear;-moz-transition:background-color .4s linear;transition:background-color .4s linear}
+		[data-tooltip]{position:relative;cursor:pointer}
+		[data-tooltip]:before,[data-tooltip]:after{position:absolute;visibility:hidden;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);opacity:0;-webkit-transition:opacity .2s ease-in-out,visibility .2s ease-in-out,-webkit-transform .2s cubic-bezier(0.71,1.7,0.77,1.24);transition:opacity .2s ease-in-out,visibility .2s ease-in-out,transform .2s cubic-bezier(0.71,1.7,0.77,1.24);-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:none}
+		[data-tooltip]:hover:before,[data-tooltip]:hover:after,[data-tooltip]:focus:before,[data-tooltip]:focus:after{visibility:visible;-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);opacity:1}
+		[data-tooltip]:before{z-index:1001;border:6px solid transparent;background:transparent;content:""}
+		[data-tooltip]:after{z-index:1000;padding:8px;width:160px;background-color:#000;background-color:hsla(0,0%,20%,0.9);color:#fff;content:attr(data-tooltip);font-size:14px;line-height:1.2}
+		[data-tooltip]:before,[data-tooltip]:after{bottom:50%;left:100%}
+		[data-tooltip]:before{margin-bottom:0;margin-left:-12px;border-top-color:transparent;border-right-color:#000;border-right-color:hsla(0,0%,20%,0.9)}
+		[data-tooltip]:hover:before,[data-tooltip]:hover:after,[data-tooltip]:focus:before,[data-tooltip]:focus:after{-webkit-transform:translateX(12px);-ms-transform:translateX(12px);transform:translateX(12px)}
+		[data-tooltip]:before{top:3px}
+		[data-tooltip]:after{margin-left:0;margin-bottom:-16px}
+		::-webkit-input-placeholder{color:rgba(#fff,.5);transition:all .25s ease;pointer-events:none;font-size:14px;.reqmargin:2px;color:rgba(#fff,.5)}
 		</style>
 		<script type="text/javascript" src="jquery.js"></script>
 		<script type="text/javascript" async src="amzn.js"></script>
+		<script type="text/javascript" src="ga.js"></script>
 	</head>
 	<body>
 		<div>
-		<input type="radio" name="mode" id="poolCheck"><label for="poolCheck"><span></span>Join the Associates pool and get a random buddy</label><br>
+		<input type="radio" name="mode" id="poolCheck"><label for="poolCheck"><span></span>Join the Associates pool and get a random buddy <a href="http://elaineou.com/wp-content/uploads/2015/11/Screen-Shot-2015-11-03-at-5.01.27-PM.png" target="_blank" data-tooltip="How do I find my Associates ID?" tabindex="-1"><img style="width:18px" src="info.png"></a></label><br>
 		<input type="radio" name="mode" id="nopoolCheck"><label for="nopoolCheck"><span></span>Choose my own Amazon Associates buddy</label>
 		</div>
 		<div id="pool">
@@ -140,6 +57,5 @@
 		  </div>
 			<div class="full"></div>
 		</div>
-		</p>
 	</body>
 </html>

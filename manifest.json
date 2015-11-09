@@ -1,14 +1,16 @@
 {
 "update_url":"http://clients2.google.com/service/update2/crx",
-	"name": "Amazon Affiliates Monetizer",
-	"version": "1.0",
+	"name": "Amazon Associates Monetizer",
+	"version": "1.0.2",
 	"manifest_version": 2,
-	"description": "Turn all your Amazon purchases into Amazon affiliate purchases.",
+	"description": "Turn all your Amazon purchases into Amazon Associate purchases.",
+    "short_name": "Turn all your Amazon purchases into Amazon Associate purchases",
 	"browser_action": {
-		"default_icon": "elaine.png",
-		"default_title": "Add amazon affiliate.",
+		"default_icon": "amzn.png",
+		"default_title": "Amazon Associates Monetizer",
 		"default_popup": "amzn.html"
 	},
+    "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
 	"permissions": [
         "webRequest",
         "webRequestBlocking",
