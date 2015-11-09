@@ -1,4 +1,5 @@
 var rules;
+var re = /\D+-\d+/;
 
 function refreshRules(rules) {
 
@@ -67,6 +68,7 @@ function emptyShowHide(isPool) {
 
 function addBuddy() {
 	var buddy = $("#tag").val();
+	if (!re.test(buddy)) { $("#tag").val("INVALID ID"); return }
 
 	chrome.extension.sendMessage({
 		addBuddy : buddy
@@ -79,12 +81,15 @@ function addBuddy() {
 }
 function addSelf() {
 	var buddy = $("#pooltag").val();
+	if (!re.test(buddy)) { $("#pooltag").val("INVALID ID"); return }
 
 	chrome.extension.sendMessage({
 		addUser : buddy
 	});
 
 	$("#pooltag").val("");
+	rules.user_id = buddy;
+	emptyShowHide(true);
 }
 
 function editBuddy() {
