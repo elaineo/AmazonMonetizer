@@ -1,7 +1,7 @@
 {
 "update_url":"http://clients2.google.com/service/update2/crx",
 	"name": "Amazon Associates Monetizer",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"manifest_version": 2,
 	"description": "Turn all your Amazon purchases into Amazon Associate purchases.",
     "short_name": "Turn all your Amazon purchases into Amazon Associate purchases",
