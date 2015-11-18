@@ -3,7 +3,28 @@ var
 	lastRequestId;
 
 //var POOL_SERVER = "http://127.0.0.1:3000/";
- var POOL_SERVER = "http://52.32.149.220/";
+var POOL_SERVER = "http://52.32.149.220/";
+
+var AMZN_DOMAINS = ["http://www.amazon.com/*",
+        "https://www.amazon.com/*",
+        "http://www.amazon.ca/*",
+        "https://www.amazon.ca/*",
+        "http://www.amazon.co.uk/*",
+        "https://www.amazon.co.uk/*",
+        "http://www.amazon.de/*",
+        "https://www.amazon.de/*",
+        "http://www.amazon.es/*",
+        "https://www.amazon.es/*",
+        "http://www.amazon.fr/*",
+        "https://www.amazon.fr/*",
+        "http://www.amazon.it/*",
+        "https://www.amazon.it/*",
+        "http://www.amazon.co.jp/*",
+        "https://www.amazon.co.jp/*",
+        "http://www.amazon.cn/*",
+        "https://www.amazon.cn/*",
+        "https://smile.amazon.com/*",
+        "http://smile.amazon.com/*" ]
 
 /*
   Rules Format
@@ -26,11 +47,28 @@ else{
 	rules = { "pool": true }
 }
 
+/*
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+	var headers = details.requestHeaders;
+	var didSet = false;
+    
+    // set http referer to something innocuous
+	for (var i = 0, l = headers.length; i < l; ++i) {
+	    if (headers[i].name == 'Referer') {
+	        headers[i].value = "https://www.facebook.com/";
+	        didSet = true;
+	        break;
+	    }
+	}
+	if (!didSet) headers.push({ name: "Referer", value: })
+
+	return {requestHeaders: headers};
+}, { urls : AMZN_DOMAINS }, ["blocking", "requestHeaders"]);
+*/
+
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
 	return redirectToMatchingRule(details, rules);
-}, {
-	urls : ["http://www.amazon.com/*", "https://www.amazon.com/*"]
-}, ["blocking"]);
+}, { urls : AMZN_DOMAINS }, ["blocking"]);
 
 function redirectToMatchingRule(details, rules) {
 	// detect product page
@@ -40,6 +78,7 @@ function redirectToMatchingRule(details, rules) {
 		var tag = rules.pool_id;
 	else
 		var tag = rules.buddy_id;
+
 	if (tag === undefined)
 		tag = "&tag=elaineou-20"
 	else
