@@ -70,9 +70,26 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 	return redirectToMatchingRule(details, rules);
 }, { urls : AMZN_DOMAINS }, ["blocking"]);
 
-function redirectToMatchingRule(details, rules) {
-	// detect product page
-	console.log(details.url);
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+	var tag = getTag(rules);
+
+	// delete referers
+	headers = details.requestHeaders;
+	for (var i = 0, l = headers.length; i < l; ++i) {
+	    if (headers[i].name == 'Referer') {
+	    	if (headers[i].value.indexOf(tag) > -1) 
+	    		// already set, get out
+	    		return { redirectUrl:"javascript:" }
+	    	
+	    	headers.splice(i,1);
+	        break;
+	    }
+	}
+	console.log(headers);
+	return {requestHeaders: headers};
+}, { urls : AMZN_DOMAINS }, ["blocking", "requestHeaders"]);
+
+function getTag(rules) {
 	// get appropriate tag
 	if (rules.pool) 
 		var tag = rules.pool_id;
@@ -80,9 +97,19 @@ function redirectToMatchingRule(details, rules) {
 		var tag = rules.buddy_id;
 
 	if (tag === undefined)
-		tag = "&tag=elaineou-20"
+		tag = "tag=elaineou-20"
 	else
-		tag = "&tag=" + tag
+		tag = "tag=" + tag
+	return tag
+}
+
+function redirectToMatchingRule(details, rules) {
+	
+	var tag = getTag(rules);
+
+	// check for params
+	if (details.url.indexOf("?") < 0) tag = "?" + tag; else tag = "&" + tag;
+
 	if ( ( details.url.indexOf("/dp/") > -1 || details.url.indexOf("/gp/") > -1 ) 
 											&& details.url.indexOf(tag) < 0 ) {
 		// get rid of other people's tags
