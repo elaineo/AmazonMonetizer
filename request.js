@@ -30,10 +30,10 @@ var AMZN_DOMAINS = ["http://www.amazon.com/*",
   Rules Format
   rules = {
 	pool: true,
-	user_id: "elaineou-20",	 // for pool
+	user_id: "elaine0c-20",	 // for pool
 	user_db: "1231234",      // for server db
 	pool_id: "warrenmar-20", // for pool
-	buddy_id: "elaineou-20"  // for nopool
+	buddy_id: "elaine0c-20"  // for nopool
   }
 */
 //rules = { "pool": true }
@@ -97,7 +97,7 @@ function getTag(rules) {
 		var tag = rules.buddy_id;
 
 	if (tag === undefined)
-		tag = "tag=elaineou-20"
+		tag = "tag=elaine0c-20"
 	else
 		tag = "tag=" + tag
 	return tag
