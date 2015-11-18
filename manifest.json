@@ -32,6 +32,8 @@
         "https://www.amazon.co.jp/*",
         "http://www.amazon.cn/*",
         "https://www.amazon.cn/*",
+        "https://smile.amazon.com/*",
+        "http://smile.amazon.com/*",
         "tabs"
     ],
 	"background": {
